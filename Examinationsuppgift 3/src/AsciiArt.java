@@ -1,7 +1,7 @@
 
 public class AsciiArt
 {
-
+   //skriver ut startskärm.
    public static void startScreen()
    {
       System.out.print("Welcome to");
@@ -15,7 +15,7 @@ public class AsciiArt
       System.out.println("Write your name and press [Enter] to start a new game...");
    }
    
-   
+   //skriver ut draken.
    public static void displayDragon()
    {
       System.out.println("                                                  .~))>>\n"
@@ -55,7 +55,7 @@ public class AsciiArt
    
    
    
-   
+   //skriver ut skatten
    public static void displayTreasure()
    {
       System.out.println("                  _.--.\n" + "              _.-'_:-'||\n" + "          _.-'_.-::::'||\n"
@@ -68,7 +68,7 @@ public class AsciiArt
             + "      |'-._   || |'|_.-'_.-'\n" + "      '-._'-.|| |' `_.-'\n" + "           '-.||_/.-'\n");
    }
    
-   
+   //skriver ut bild på "utomhus"
    public static void displayOutside()
    {
       System.out.print("        _    .  ,   .           .\r\n" + 
@@ -82,6 +82,7 @@ public class AsciiArt
             "");
    }
    
+   //tar in 4 booleans för varje kordinat och skriver ut en karta över rummet beroende på vilka dörrar som finns.
    public static void displayRoom(boolean N, boolean S, boolean W, boolean E)
    {
     

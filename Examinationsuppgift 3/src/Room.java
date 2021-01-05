@@ -91,7 +91,7 @@ public class Room
          this.setItem(treasure);
          this.setMonster(new Monster("The Legendary Dragon!",10,180));
       }
-      //Room8
+      //Room9
       if(xPos == 2 && yPos == 2)
       {
          this.setDoors(new Door[1]);
@@ -150,14 +150,17 @@ public class Room
       return doors;
    } 
    
-   public static void startFight(Monster enemy){
-    enemy.setMonsterName(enemy.monsterRandomizer());
-      System.out.printf("Caution!%s appeared with %d HP! and %d damage!\n", enemy.getMonsterName(), enemy.getMonsterHp(),
-            enemy.getMonsterDamage());
+   public static boolean startFight(Monster enemy, boolean playerHasPotion)
+   {
+      boolean playerUsedPotion = false;
+      
+      enemy.setMonsterName(enemy.monsterRandomizer());
+      System.out.printf("Caution!%s appeared with %d HP! and %d damage!\n", enemy.getMonsterName(),
+            enemy.getMonsterHp(), enemy.getMonsterDamage());
 
       while (enemy.getMonsterHp() > 0 && Player.getHealthPoints() > 0)
       {
-         System.out.printf("Press: F to attack the %s!", enemy.getMonsterName());
+         System.out.printf("Press: F to attack the %s or H to use healthpotion!", enemy.getMonsterName());
          Scanner input = new Scanner(System.in);
          String val = input.nextLine();
 
@@ -171,8 +174,8 @@ public class Room
             if (randInt <= 80)
             {
                enemy.monsterTakingDamage();
-               System.out.printf("\nYou dealt %d damage on the enemy: %s,\nEnemy has %d HP left!",
-                     Player.getDamage(), enemy.getMonsterName(), enemy.getMonsterHp());
+               System.out.printf("\nYou dealt %d damage on the enemy: %s,\nEnemy has %d HP left!", Player.getDamage(),
+                     enemy.getMonsterName(), enemy.getMonsterHp());
             } else if (randInt > 80)
             {
                System.out.println("You missed your attack, and dealt no damage!");
@@ -180,7 +183,7 @@ public class Room
 
             if (monsterInt <= 70)
             {
-               Player.setHealthPoints(Player.getHealthPoints() - enemy.getMonsterDamage() );
+               Player.setHealthPoints(Player.getHealthPoints() - enemy.getMonsterDamage());
                System.out.printf("\n%s hit you for %d, you have %d HP left!", enemy.getMonsterName(),
                      enemy.getMonsterDamage(), Player.getHealthPoints());
             }
@@ -195,15 +198,27 @@ public class Room
             System.out.println("\n*********************************************************************************");
             break;
 
+         case "h":
+            if(playerHasPotion)
+            {
+               Player.setHealthPoints(100);
+               System.out.println("Your health is fully restored!"); 
+               playerUsedPotion = true;
+            }
+            else
+            {
+               System.out.println("You have no potions!");
+            }
+            break;
+
          default:
             System.out.println("Unknown input registred, please try again!");
             continue;
 
          }
-         
 
       }
-      if (0 >= enemy.getMonsterHp()  && 0 <= Player.getHealthPoints())
+      if (0 >= enemy.getMonsterHp() && 0 <= Player.getHealthPoints())
       {
          System.out.printf("You defeated the %s, after a glorious battle!\n", enemy.getMonsterName());
 
@@ -211,65 +226,86 @@ public class Room
       {
          System.out.println("You died! Game over!");
          DungeonMaster.endGame(false);
-
       }
+      return playerUsedPotion;
    }
-   
-   public static void dragonFight(Monster dragon){ // Inte klar, ignorera tillsvidare.
-      
-      System.out.println("You suddenly feel a shiver up your spine, a great creature stirs....");
-      System.out.printf("\nYou can see the %s nearing you, this might be your final breath",dragon.getMonsterName());
-      System.out.printf("\nThe %s has %d HP and deals %d damage!",dragon.getMonsterName(),dragon.getMonsterHp(),dragon.getMonsterDamage());
-       while(dragon.getMonsterHp() > 0 && Player.getHealthPoints() > 0){
 
-       System.out.printf("\nPress F: to fight for your life against the %s!",dragon.getMonsterName());
-       Scanner input = new Scanner(System.in);
-       String val = input.nextLine();
-       
-       switch(val){
-           case "f":
-               
-       Random rand = new Random();
-       int randInt = rand.nextInt(100) + 1;
-       int monsterInt = rand.nextInt(100) +1;
-       
-       if(randInt <= 80){
-             dragon.monsterTakingDamage();
-            System.out.printf("You dealt: %d damage! %s has %d HP left!",Player.getDamage(),dragon.getMonsterName(),dragon.getMonsterHp());
-           }
-       else if(randInt > 80){
-           System.out.println("You missed your attack and dealt no damage!");
-       }
-       
-       
-       if(monsterInt <= 70 ){
-          Player.setHealthPoints(Player.getHealthPoints() - dragon.getMonsterDamage() );
-         System.out.printf("\n%s Cauterizing Flame dealt %d damage on you!",dragon.getMonsterName(),dragon.getMonsterDamage());
-       }
-       else if(monsterInt > 70){
-           System.out.println("You managed to dodge the dragons fireblast!\n You took no damage! ");
-       }
-            
-             System.out.println("\n*********************************************************************************");
-             System.out.printf("\n%s have %d HP left, and you (%s) have %d HP left!",dragon.getMonsterName(),dragon.getMonsterHp()
-                   ,Player.getName(),Player.getHealthPoints());
+   public static boolean dragonFight(Monster dragon, boolean playerHasPotion)
+   {
+      boolean playerUsedPotion = false;
+      System.out.println("You suddenly feel a shiver up your spine, a great creature stirs....");
+      System.out.printf("\nYou can see the %s nearing you, this might be your final breath", dragon.getMonsterName());
+      System.out.printf("\nThe %s has %d HP and deals %d damage!", dragon.getMonsterName(), dragon.getMonsterHp(),
+            dragon.getMonsterDamage());
+      while (dragon.getMonsterHp() > 0 && Player.getHealthPoints() > 0)
+      {
+
+         System.out.printf("\nPress F: to fight for your life against the %s or H to use healthpotion!", dragon.getMonsterName());
+         Scanner input = new Scanner(System.in);
+         String val = input.nextLine();
+
+         switch (val)
+         {
+         case "f":
+
+            Random rand = new Random();
+            int randInt = rand.nextInt(100) + 1;
+            int monsterInt = rand.nextInt(100) + 1;
+
+            if (randInt <= 80)
+            {
+               dragon.monsterTakingDamage();
+               System.out.printf("You dealt: %d damage! %s has %d HP left!", Player.getDamage(),
+                     dragon.getMonsterName(), dragon.getMonsterHp());
+            } else if (randInt > 80)
+            {
+               System.out.println("You missed your attack and dealt no damage!");
+            }
+
+            if (monsterInt <= 70)
+            {
+               Player.setHealthPoints(Player.getHealthPoints() - dragon.getMonsterDamage());
+               System.out.printf("\n%s Cauterizing Flame dealt %d damage on you!", dragon.getMonsterName(),
+                     dragon.getMonsterDamage());
+            } else if (monsterInt > 70)
+            {
+               System.out.println("You managed to dodge the dragons fireblast!\n You took no damage! ");
+            }
+
+            System.out.println("\n*********************************************************************************");
+            System.out.printf("\n%s have %d HP left, and you (%s) have %d HP left!", dragon.getMonsterName(),
+                  dragon.getMonsterHp(), Player.getName(), Player.getHealthPoints());
             System.out.println("\n*********************************************************************************");
             break;
-           
-           
-           default: 
-           System.out.println("Vänligen försök att skriva igen!");
-           continue;
-           
-       }
-     }
-      if(0 >= dragon.getMonsterHp() && 0 <= Player.getHealthPoints()){
-       System.out.printf("You defeated the %s, after a glorious battle!\n",dragon.getMonsterName());
-       
-       }
-     else{
+
+         case "h":
+            if(playerHasPotion)
+            {
+               Player.setHealthPoints(100);
+               System.out.println("Your health is fully restored!"); 
+               playerUsedPotion = true;
+            }
+            else
+            {
+               System.out.println("You have no potions left!");
+            }
+            break;
+
+         default:
+            System.out.println("Vänligen försök att skriva igen!");
+            continue;
+
+         }
+      }
+      if (0 >= dragon.getMonsterHp() && 0 <= Player.getHealthPoints())
+      {
+         System.out.printf("You defeated the %s, after a glorious battle!\n", dragon.getMonsterName());
+
+      } else
+      {
          System.out.println("You died! Game over!");
          DungeonMaster.endGame(false);
-     }
-     }
+      }
+      return playerUsedPotion;
+   }
 }
