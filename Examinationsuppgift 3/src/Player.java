@@ -1,6 +1,8 @@
 
 public class Player
 {
+    // Nödvändiga variabler
+    // Namnen är ganska tydliga på vad de används till
     private static String name;
     private static int healthPoints;
     private static int damage;
@@ -8,15 +10,17 @@ public class Player
 
    public Player(String name, int healthPoints, int damage, Item[]inventory)
    {
+      // Skapar spelare med värden som kommer att användas senare
       this.setName(name);
       Player.setHealthPoints(healthPoints);
       this.setDamage(damage);
       this.inventory = inventory;
    }
 
+   // Lägger till föremål till spelaren
    public Item[] addItem(Item item)
    {
-      
+      // Om föremålet är ett svärd så ökas skadan som görs
       if(item.getName() == "Sword")
       {
          setDamage(getDamage() + Weapon.getIncreaseDamage());
@@ -35,6 +39,8 @@ public class Player
       
    }
    
+    // Tar bort föremål från spelaren
+    // Exempelvis om man dricker potion
    public Item[] removeItem(String itemName)
    {
       for(int i =0; i < inventory.length; i++)
@@ -53,6 +59,7 @@ public class Player
       
    }
    
+    // Visar vad spelaren har för föremål
    public void displayInventory(Item[] inventory)
    {
       Item item;
@@ -68,6 +75,7 @@ public class Player
       System.out.println();
    }
    
+    
    public void setInventory(Item[] inventory)
    {
       this.inventory = inventory;
